@@ -91,14 +91,23 @@ function crearPelicula(req,res){
     res.status(500).send(err);
   });
 }
+function actualizaPelicula(req,res){
+  Movie.findByIdAndUpdate(req.params.id, req.body, function (err, movieinfo) {
+    if (err) res.status(500).send(err);
+    else res.sendStatus(200);
+});
+}
+router.put("/:id", actualizaPelicula);
 router.put("/secure/:id", tokenVerify, function (req, res, next) {
   debug("Modificación segura de una pelicula con token");
-  Movie.findByIdAndUpdate(req.params.id, req.body, function (err, movieinfo) {
+ actualizaPelicula(req,res);
+});
+router.delete("/:id", function (req, res, next) {
+  Movie.findByIdAndDelete(req.params.id, function (err, movieinfo) {
       if (err) res.status(500).send(err);
       else res.sendStatus(200);
   });
 });
-
 router.delete("/secure/:id", tokenVerify, function (req, res, next) {
   debug("Borrado seguro de una pelicula con token");
   Movie.findByIdAndDelete(req.params.id, function (err, movieinfo) {
