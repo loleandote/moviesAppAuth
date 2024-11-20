@@ -7,34 +7,35 @@ const dotenv = require('dotenv');
 // get config vars
 dotenv.config();
 var debug = require("debug")("moviesAppAuth:server");
+var { tokenVerify } = require("../auxiliar/seguridad.js"); // Importar la función
 
 //Models
 var Movie = require("../models/Movie.js");
 
 mongoose.set("strictQuery", false);
 var db = mongoose.connection;
-function tokenVerify(req, res, next) {
-  var authHeader = req.get('authorization');
-  const retrievedToken = authHeader.split(' ')[0];
+// function tokenVerify(req, res, next) {
+//   var authHeader = req.get('authorization');
+//   const retrievedToken = authHeader.split(' ')[0];
 
-  if (!retrievedToken) {
-    res.status(401).send({
-      ok: false,
-      message: "Token inválido"
-    })
-  } else {
-    jwt.verify(retrievedToken, process.env.TOKEN_SECRET, function (err, retrievedToken) {
-      if (err) {
-        res.status(401).send({
-          ok: false,
-          message: "Token inválido"
-        });
-      } else {
-        next();
-      }
-    });
-  }
-}
+//   if (!retrievedToken) {
+//     res.status(401).send({
+//       ok: false,
+//       message: "Token inválido"
+//     })
+//   } else {
+//     jwt.verify(retrievedToken, process.env.TOKEN_SECRET, function (err, retrievedToken) {
+//       if (err) {
+//         res.status(401).send({
+//           ok: false,
+//           message: "Token inválido"
+//         });
+//       } else {
+//         next();
+//       }
+//     });
+//   }
+// }
 
 router.get("/secure", tokenVerify,
   function (req, res, next) {
